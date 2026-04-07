@@ -7,6 +7,7 @@ const docId = "doc1";
 
 export default function Editor() {
   const [value, setValue] = useState("");
+  const [temp, setTemp] = useState(false)
 
   useEffect(() => {
     // send event to join the doc
