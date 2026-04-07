@@ -9,13 +9,16 @@ export default function Editor() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
+    // send event to join the doc
     socket.emit("join-document", docId);
 
+    // send event to load the document
     socket.on("load-document", (update: Uint8Array) => {
       Y.applyUpdate(yDoc, update);
       setValue(yText.toString());
     });
 
+    // send events to receive the update
     socket.on("receive-update", (update: Uint8Array) => {
       Y.applyUpdate(yDoc, update);
     });
