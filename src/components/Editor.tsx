@@ -1,22 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { socket } from "../socket/socket";
 import { yDoc, yText } from "../yjs/yjsClient";
+import Quill from "quill";
+import { QuillBinding } from "y-quill";
 import * as Y from "yjs";
 
 const docId = "doc1";
 
 export default function Editor() {
-  const [value, setValue] = useState("");
-  const [temp, setTemp] = useState(false)
+  const editorRef= useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     // send event to join the doc
+    const quill = new Quill(editorRef.current!, {
+      theme: "snow",
+    });
+    // Bind Quill with Yjs
+    new QuillBinding(yText, quill);
+
     socket.emit("join-document", docId);
 
     // send event to load the document
     socket.on("load-document", (update: Uint8Array) => {
       Y.applyUpdate(yDoc, update);
-      setValue(yText.toString());
+      // setValue(yText.toString());
     });
 
     // send events to receive the update
@@ -28,30 +35,31 @@ export default function Editor() {
       socket.emit("send-update", update);
     });
 
-    yText.observe(() => {
-      setValue(yText.toString());
-    });
+    // yText.observe(() => {
+    //   setValue(yText.toString());
+    // });
 
     return () => {
       socket.disconnect();
     };
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
+  // const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const newValue = e.target.value;
 
-    // Replace content (temporary approach)
-    yDoc.transact(() => {
-      yText.delete(0, yText.length);
-      yText.insert(0, newValue);
-    });
-  };
+  //   // Replace content (temporary approach)
+  //   yDoc.transact(() => {
+  //     yText.delete(0, yText.length);
+  //     yText.insert(0, newValue);
+  //   });
+  // };
 
   return (
-    <textarea
-      value={value}
-      onChange={handleChange}
-      style={{ width: "100%", height: "300px" }}
-    />
+    // <textarea
+    //   value={value}
+    //   onChange={handleChange}
+    //   style={{ width: "100%", height: "300px" }}
+    // />
+    <div ref={editorRef} style={{ height: "400px" }} />
   );
 }

@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "quill": "^2.0.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "socket.io-client": "^4.8.3",
+    "y-quill": "^1.0.0",
     "yjs": "^13.6.30"
   },
   "devDependencies": {
