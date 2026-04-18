@@ -12,6 +12,7 @@ export default function Editor() {
 
   useEffect(() => {
     // send event to join the doc
+    if (!editorRef.current) return;
     const quill = new Quill(editorRef.current!, {
       theme: "snow",
     });
@@ -40,7 +41,8 @@ export default function Editor() {
     // });
 
     return () => {
-      socket.disconnect();
+      socket.off("load-document");
+      socket.off("receive-update");
     };
   }, []);
 
