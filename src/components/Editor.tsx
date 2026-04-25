@@ -19,7 +19,8 @@ export default function Editor() {
     // Bind Quill with Yjs
     new QuillBinding(yText, quill);
 
-    socket.emit("join-document", docId);
+    const stateVector = Y.encodeStateVector(yDoc);
+    socket.emit("join-document", {docId , stateVector});
 
     // send event to load the document
     socket.on("load-document", (update: Uint8Array) => {
